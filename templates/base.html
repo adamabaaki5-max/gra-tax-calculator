@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ page_title }} | GRA Tax Calculator</title>
+{% set full_title = (page_title ~ ' | GRA Income Tax Calculator') if page_title else 'GRA Income Tax Calculator' %}
+<title>{{ full_title }}</title>
+<meta name="description" content="Calculate Ghana annual and monthly income tax, quarterly instalments, remaining tax and chargeable income.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GRA Income Tax Calculator">
+<meta property="og:title" content="{{ full_title }}">
+<meta property="og:description" content="Calculate Ghana annual and monthly income tax, quarterly instalments, remaining tax and chargeable income.">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
