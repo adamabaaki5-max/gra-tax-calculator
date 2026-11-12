@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block body %}
+<section class="hero"><div class="container">
+  <nav class="crumbs"><a href="{{ url_for('index') }}">Home</a><span>›</span>Rate Settings</nav>
+  <h1>Rate Settings</h1>
+  <p>Edit the tax bands for a year, or add a new tax year.</p>
+</div></section>
+
+<main class="container pull">
+  {% if saved %}<p class="flash">The {{ saved }} tax bands were saved. They now appear on the home screen.</p>{% endif %}
+  {% if deleted %}<p class="flash">The {{ deleted }} tax year was deleted.</p>{% endif %}
+  {% if ok_msg %}<p class="flash">{{ ok_msg }}</p>{% endif %}
+  {% if default_pw %}<p class="notice"><b>Please change the default password</b> using the form at the bottom of this page.</p>{% endif %}
+  {% if not persistent %}<p class="notice"><b>No database connected.</b> Changes made here are kept only temporarily and may disappear. Connect an Upstash Redis database to the Vercel project (see the README).</p>{% endif %}
+  {% if error %}<p class="alert">{{ error }}</p>{% endif %}
+
+  <div class="stack">
+    <div class="card">
+      <h3 style="margin-top:0;color:var(--green-dark)">Tax years</h3>
+      <div class="table-wrap" style="padding:0">
+        <table class="yrtable">
+          <thead><tr><th>Tax year</th><th>Annual table</th><th>Monthly table</th><th></th></tr></thead>
+          <tbody>
+          {% for year, tables in rates.items() %}
+            <tr>
+              <td><b>{{ year }}</b></td>
+              {% for p in ['annual', 'monthly'] %}
+                <td>{% if p in tables %}{{ tables[p]|length - 1 }} bands + exceeding{% else %}—{% endif %}</td>
+              {% endfor %}
+              <td><div class="acts">
+                <a class="btn alt" href="{{ url_for('settings_edit', year=year) }}">Edit</a>
+                {% if rates|length > 1 %}
+                <form method="post" onsubmit="return confirm('Delete the {{ year }} tax bands? This cannot be undone.');">
+                  <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="action" value="delete"><input type="hidden" name="year" value="{{ year }}">
+                  <button class="btn danger" type="submit">Delete</button>
+                </form>
+                {% endif %}
+              </div></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;color:var(--green-dark)">Add a new tax year</h3>
+      <p class="hint">Type in the annual and/or monthly tax bands for the new year.</p>
+      <div class="formrow"><a class="btn" href="{{ url_for('settings_edit', new=1) }}">+ Add a tax year</a></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;color:var(--green-dark)">Change password</h3>
+      <div class="narrow">
+        <form method="post" autocomplete="off">
+          <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="action" value="password">
+          <label for="current">Current password</label><div class="input"><input type="password" id="current" name="current" required></div>
+          <label for="new">New password (at least 8 characters)</label><div class="input"><input type="password" id="new" name="new" minlength="8" required></div>
+          <label for="new2">Repeat new password</label><div class="input"><input type="password" id="new2" name="new2" minlength="8" required></div>
+          <div class="formrow"><button class="btn" type="submit">Change password</button></div>
+        </form>
+        <form method="post" style="margin-top:14px"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="action" value="logout">
+          <button class="btn alt" type="submit">Lock Rate Settings (sign out)</button></form>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

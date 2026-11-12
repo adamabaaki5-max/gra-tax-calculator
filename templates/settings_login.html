@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block body %}
+<section class="hero"><div class="container">
+  <nav class="crumbs"><a href="{{ url_for('index') }}">Home</a><span>›</span>Rate Settings</nav>
+  <h1>Rate Settings</h1>
+  <p>Enter the password to view, add, edit or delete tax bands.</p>
+</div></section>
+
+<main class="container pull">
+  <div class="card"><div class="narrow">
+    {% if error %}<p class="alert">{{ error }}</p>{% endif %}
+    <form method="post" autocomplete="off">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+      <label for="password">Password</label>
+      <div class="input"><input type="password" id="password" name="password" required autofocus></div>
+      <div class="formrow"><button class="btn" type="submit">Unlock Rate Settings</button>
+        <a class="btn alt" href="{{ url_for('index') }}">Cancel</a></div>
+    </form>
+  </div></div>
+</main>
+{% endblock %}
