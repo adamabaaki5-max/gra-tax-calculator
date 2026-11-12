@@ -90,7 +90,7 @@ def alert(text):
 
 @app.route("/")
 def index():
-    return render_template("index.html", years=tax_tables(), page_title="Select Tax Year")
+    return render_template("index.html", years=tax_tables(), page_title="")
 
 
 @app.route("/year/<int:year>")
